@@ -1,21 +1,27 @@
 package ma.exampe.backendchallengetest.sec.service;
 
 import com.github.javafaker.Faker;
+import com.google.gson.Gson;
 import ma.exampe.backendchallengetest.sec.entities.AppUser;
+import ma.exampe.backendchallengetest.sec.entities.ImportUsersSummary;
 import ma.exampe.backendchallengetest.sec.repo.AppUserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 @Transactional
 public class AppUserServiceImpl implements AppUserService {
     private AppUserRepository appUserRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public AppUserServiceImpl(AppUserRepository appUserRepository) {
+    public AppUserServiceImpl(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -39,6 +45,47 @@ public class AppUserServiceImpl implements AppUserService {
             user.setRole(faker.bool().bool() ? "admin" : "user");
             users.add(user);
         }
-        return appUserRepository.saveAll(users);
+        return users;
+    }
+
+    @Override
+    public ImportUsersSummary createUsersFromJson(String jsonContent) {
+        ImportUsersSummary importSummary = new ImportUsersSummary();
+        Gson gson = new Gson();
+
+        try {
+            AppUser[] usersArray = gson.fromJson(jsonContent, AppUser[].class);
+            List<AppUser> users = Arrays.asList(usersArray);
+
+            int totalRecords = users.size();
+            int importedRecords = 0;
+            int failedRecords = 0;
+
+            for (AppUser user : users) {
+                if (!appUserRepository.existsByEmail(user.getEmail()) && !appUserRepository.existsByUsername(user.getUsername())) {
+                    // Encodage du mot de passe avant l'enregistrement
+                    String encodedPassword = passwordEncoder.encode(user.getPassword());
+                    user.setPassword(encodedPassword);
+
+                    appUserRepository.save(user);
+                    importedRecords++;
+                } else {
+                    failedRecords++;
+                }
+            }
+
+            importSummary.setTotalRecords(totalRecords);
+            importSummary.setImportedRecords(importedRecords);
+            importSummary.setFailedRecords(failedRecords);
+
+        } catch (Exception e) {
+            // En cas d'erreur lors de l'importation, retourner un ImportSummary vide avec tous les enregistrements marqués comme échoués
+            e.printStackTrace();
+            importSummary.setTotalRecords(0);
+            importSummary.setImportedRecords(0);
+            importSummary.setFailedRecords(0);
+        }
+
+        return importSummary;
     }
 }
