@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/users")
 public class AppUserRestService {
     private AppUserService appUserService;
 
@@ -24,7 +25,7 @@ public class AppUserRestService {
         this.appUserService = appUserService;
     }
 
-    @GetMapping("/api/users/generate")
+    @GetMapping("/generate")
     public  ResponseEntity<Resource>  generateUsers(@RequestParam int count) {
         List<AppUser> users = appUserService.generateUsers(count);
 

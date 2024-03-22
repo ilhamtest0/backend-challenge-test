@@ -4,8 +4,8 @@ import com.github.javafaker.Faker;
 import com.google.gson.Gson;
 import ma.exampe.backendchallengetest.sec.entities.AppUser;
 import ma.exampe.backendchallengetest.sec.entities.ImportUsersSummary;
+import ma.exampe.backendchallengetest.sec.entities.PasswordEncoder;
 import ma.exampe.backendchallengetest.sec.repo.AppUserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,11 +63,7 @@ public class AppUserServiceImpl implements AppUserService {
 
             for (AppUser user : users) {
                 if (!appUserRepository.existsByEmail(user.getEmail()) && !appUserRepository.existsByUsername(user.getUsername())) {
-                    // Encodage du mot de passe avant l'enregistrement
-                    String encodedPassword = passwordEncoder.encode(user.getPassword());
-                    user.setPassword(encodedPassword);
-
-                    appUserRepository.save(user);
+                    saveUser(user);
                     importedRecords++;
                 } else {
                     failedRecords++;
@@ -87,5 +83,13 @@ public class AppUserServiceImpl implements AppUserService {
         }
 
         return importSummary;
+    }
+
+    @Override
+    public void saveUser(AppUser user) {
+        // Encoder le mot de passe avant de sauvegarder l'utilisateur
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+        appUserRepository.save(user);
     }
 }
