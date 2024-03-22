@@ -18,10 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class AppUserRestService {
+public class AppUserRestController {
     private AppUserService appUserService;
 
-    public AppUserRestService(AppUserService appUserService) {
+    public AppUserRestController(AppUserService appUserService) {
         this.appUserService = appUserService;
     }
 

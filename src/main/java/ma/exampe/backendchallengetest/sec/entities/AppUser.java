@@ -1,6 +1,7 @@
 package ma.exampe.backendchallengetest.sec.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class AppUser {
     private String company;
     private String jobPosition;
     private String mobile;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String role;
 }

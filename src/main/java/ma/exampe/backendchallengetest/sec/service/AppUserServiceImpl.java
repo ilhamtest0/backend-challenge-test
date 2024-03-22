@@ -86,6 +86,11 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
+    public AppUser loadUserByUsername(String username) {
+        return appUserRepository.findByUsername(username);
+    }
+
+    @Override
     public void saveUser(AppUser user) {
         // Encoder le mot de passe avant de sauvegarder l'utilisateur
         String hashedPassword = passwordEncoder.encode(user.getPassword());
