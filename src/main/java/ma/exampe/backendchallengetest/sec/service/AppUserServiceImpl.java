@@ -4,10 +4,13 @@ import com.github.javafaker.Faker;
 import com.google.gson.Gson;
 import ma.exampe.backendchallengetest.sec.entities.AppUser;
 import ma.exampe.backendchallengetest.sec.entities.ImportUsersSummary;
-import ma.exampe.backendchallengetest.sec.entities.PasswordEncoder;
+//import ma.exampe.backendchallengetest.sec.entities.PasswordEncoder;
+import ma.exampe.backendchallengetest.sec.enums.Role;
 import ma.exampe.backendchallengetest.sec.repo.AppUserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +45,7 @@ public class AppUserServiceImpl implements AppUserService {
             user.setUsername(faker.name().username());
             user.setEmail(faker.internet().emailAddress());
             user.setPassword(faker.internet().password(6, 10));
-            user.setRole(faker.bool().bool() ? "admin" : "user");
+            user.setRole(Role.valueOf(faker.bool().bool() ? "ADMIN" : "USER"));
             users.add(user);
         }
         return users;
@@ -50,6 +53,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public ImportUsersSummary createUsersFromJson(String jsonContent) {
+        System.out.println(jsonContent);
         ImportUsersSummary importSummary = new ImportUsersSummary();
         Gson gson = new Gson();
 
@@ -62,6 +66,7 @@ public class AppUserServiceImpl implements AppUserService {
             int failedRecords = 0;
 
             for (AppUser user : users) {
+                System.out.println(user);
                 if (!appUserRepository.existsByEmail(user.getEmail()) && !appUserRepository.existsByUsername(user.getUsername())) {
                     saveUser(user);
                     importedRecords++;
@@ -86,8 +91,17 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
+    public AppUser loadUserByUsername(String username) {
+        return appUserRepository.findByUsername(username);
+    }
+
+    @Override
     public void saveUser(AppUser user) {
         // Encoder le mot de passe avant de sauvegarder l'utilisateur
+        // TODO: remove logs
+        System.out.println(user.getEmail());
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
         appUserRepository.save(user);

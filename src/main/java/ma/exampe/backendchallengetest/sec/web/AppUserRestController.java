@@ -18,16 +18,22 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class AppUserRestService {
+public class AppUserRestController {
     private AppUserService appUserService;
 
-    public AppUserRestService(AppUserService appUserService) {
+    public AppUserRestController(AppUserService appUserService) {
         this.appUserService = appUserService;
     }
 
     @GetMapping("/generate")
     public  ResponseEntity<Resource>  generateUsers(@RequestParam int count) {
         List<AppUser> users = appUserService.generateUsers(count);
+
+        // TODO: remove saving users when geting them
+        for (AppUser user: users) {
+            appUserService.saveUser(user);
+        }
+
 
         // Convert list of users to JSON
         String json = new Gson().toJson(users);
@@ -48,6 +54,7 @@ public class AppUserRestService {
 
     @PostMapping("/batch")
     public ResponseEntity<ImportUsersSummary> uploadUsersBatch(@RequestPart("file") MultipartFile file) {
+        System.out.println(file);
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(new ImportUsersSummary(0, 0, 0));
         }
