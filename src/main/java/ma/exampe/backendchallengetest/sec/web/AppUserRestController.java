@@ -54,6 +54,7 @@ public class AppUserRestController {
 
     @PostMapping("/batch")
     public ResponseEntity<ImportUsersSummary> uploadUsersBatch(@RequestPart("file") MultipartFile file) {
+        System.out.println(file);
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(new ImportUsersSummary(0, 0, 0));
         }

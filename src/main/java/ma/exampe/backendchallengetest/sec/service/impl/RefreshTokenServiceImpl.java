@@ -75,7 +75,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .map(RefreshToken::getUser)
                 .orElseThrow(() -> new TokenException(request.getRefreshToken(),"Refresh token does not exist"));
 
-        String token = jwtService.generateToken(user);
+        String token = jwtService.generateToken((UserDetails) user);
         return RefreshTokenResponse.builder()
                 .accessToken(token)
                 .refreshToken(request.getRefreshToken())

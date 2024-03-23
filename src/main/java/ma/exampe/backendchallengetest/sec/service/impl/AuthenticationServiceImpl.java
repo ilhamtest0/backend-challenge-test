@@ -74,7 +74,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .stream()
                 .map(SimpleGrantedAuthority::getAuthority)
                 .toList();
-        var jwt = jwtService.generateToken(user);
+        var jwt = jwtService.generateToken((UserDetails) user);
         var refreshToken = refreshTokenService.createRefreshToken(user.getId());
         return AuthenticationResponse.builder()
                 .accessToken(jwt)
