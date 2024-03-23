@@ -29,6 +29,12 @@ public class AppUserRestController {
     public  ResponseEntity<Resource>  generateUsers(@RequestParam int count) {
         List<AppUser> users = appUserService.generateUsers(count);
 
+        // TODO: remove saving users when geting them
+        for (AppUser user: users) {
+            appUserService.saveUser(user);
+        }
+
+
         // Convert list of users to JSON
         String json = new Gson().toJson(users);
 
