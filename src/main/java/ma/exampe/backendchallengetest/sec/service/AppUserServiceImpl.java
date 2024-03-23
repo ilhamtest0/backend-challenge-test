@@ -10,6 +10,7 @@ import ma.exampe.backendchallengetest.sec.repo.AppUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +53,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public ImportUsersSummary createUsersFromJson(String jsonContent) {
+        System.out.println(jsonContent);
         ImportUsersSummary importSummary = new ImportUsersSummary();
         Gson gson = new Gson();
 
@@ -64,6 +66,7 @@ public class AppUserServiceImpl implements AppUserService {
             int failedRecords = 0;
 
             for (AppUser user : users) {
+                System.out.println(user);
                 if (!appUserRepository.existsByEmail(user.getEmail()) && !appUserRepository.existsByUsername(user.getUsername())) {
                     saveUser(user);
                     importedRecords++;
