@@ -52,12 +52,18 @@ public class AppUser implements UserDetails { // make our app User a spring secu
 
     @Override
     public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
         return email;
     }
 
-    public String getAppUsername() {
+   /* public String getAppUsername() {
         return username;
     }
+
+    */
 
     @Override
     public boolean isAccountNonExpired() {

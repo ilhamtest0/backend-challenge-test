@@ -80,6 +80,8 @@ public class AuthorizationController {
             String token = Utils.extractToken(authorizationHeader);
             Claims claims = Utils.decodeToken(token);
             String userEmail = claims.get("sub", String.class);
+            System.out.println("users/me claim:");
+            System.out.println(userEmail);
             if (userEmail != null) {
                 AppUser userProfile = userRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
                 return ResponseEntity.ok().body(userProfile);
@@ -119,9 +121,11 @@ public class AuthorizationController {
             if (requesterUserEmail != null) {
                 AppUser requesterUserProfile = userRepository.findByEmail(requesterUserEmail).orElseThrow(() -> new RuntimeException("Requester User not found"));
                 String requesterUserRole = requesterUserProfile.getRole().toString();
-                String requesterUserName = requesterUserProfile.getAppUsername();
+                String requesterUserName = requesterUserProfile.getUsername();
+                System.out.println(requesterUserName);
                 if(requesterUserRole.equals("ADMIN") || requesterUserName.equals(username)) { // ADMIN OR OWN
-                    AppUser requestedUserProfile = userRepository.findByEmail(requesterUserEmail).orElseThrow(() -> new RuntimeException("Requested User not found"));
+                    AppUser requestedUserProfile = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Requested User not found"));
+                    //AppUser requestedUserProfile = userRepository.findByEmail(requesterUserEmail).orElseThrow(() -> new RuntimeException("Requested User not found"));
                     return ResponseEntity.ok().body(requestedUserProfile);
                 } else  {
                     throw new RuntimeException("User does not have right privileges");

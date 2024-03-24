@@ -75,6 +75,7 @@ public class AuthenticationController {
                 .header(HttpHeaders.SET_COOKIE,refreshTokenCookie.toString())
                 .body(authenticationResponse);
     }
+
     /*
     @PostMapping("/auth/refresh-token")
     public ResponseEntity<RefreshTokenResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
