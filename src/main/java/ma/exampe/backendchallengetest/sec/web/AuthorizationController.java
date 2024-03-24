@@ -34,6 +34,7 @@ public class AuthorizationController {
         this.userRepository = userRepository;
     }*/
 
+    /*
 
     @GetMapping("/admin/resource")
     @PreAuthorize("hasAuthority('READ_PRIVILEGE') and hasRole('ADMIN')")
@@ -54,6 +55,8 @@ public class AuthorizationController {
     public ResponseEntity<String> sayHelloWithRoleAdminAndReadAuthority() {
         return ResponseEntity.ok("Hello, you have access to a protected resource that requires admin role and read authority.");
     }
+
+    */
 
     @GetMapping("/users/me")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
@@ -132,6 +135,7 @@ public class AuthorizationController {
     }
 
 
+    /*
     @DeleteMapping("/admin/resource")
     @PreAuthorize("hasAuthority('DELETE_PRIVILEGE') and hasRole('ADMIN')")
     public ResponseEntity<String> sayHelloWithRoleAdminAndDeleteAuthority() {
@@ -147,5 +151,7 @@ public class AuthorizationController {
     public ResponseEntity<String> sayHelloWithRoleUserAndUpdateAuthority() {
         return ResponseEntity.ok("Hello, you have access to a protected resource that requires user role and update authority.");
     }
+
+     */
 
 }
