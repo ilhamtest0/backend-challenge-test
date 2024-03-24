@@ -10,11 +10,11 @@ import ma.exampe.backendchallengetest.sec.repo.AppUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -91,7 +91,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUser loadUserByUsername(String username) {
+    public Optional<AppUser> loadUserByUsername(String username) {
         return appUserRepository.findByUsername(username);
     }
 
