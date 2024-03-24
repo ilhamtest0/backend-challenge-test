@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Authentication", description = "The Authentication API. Contains operations like login, logout, refresh-token etc.")
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api")
 @SecurityRequirements() /*
 This API won't have any security requirements. Therefore, we need to override the default security requirement configuration
 with @SecurityRequirements()
@@ -52,7 +52,7 @@ public class AuthenticationController {
                 .body(authenticationResponse);
     }*/
 
-    @PostMapping("/authenticate")
+    @PostMapping("/auth")
     @Operation(
             responses = {
                     @ApiResponse(
@@ -75,12 +75,12 @@ public class AuthenticationController {
                 .header(HttpHeaders.SET_COOKIE,refreshTokenCookie.toString())
                 .body(authenticationResponse);
     }
-    @PostMapping("/refresh-token")
+    @PostMapping("/auth/refresh-token")
     public ResponseEntity<RefreshTokenResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
         return ResponseEntity.ok(refreshTokenService.generateNewToken(request));
     }
 
-    @PostMapping("/refresh-token-cookie")
+    @PostMapping("/auth/refresh-token-cookie")
     public ResponseEntity<Void> refreshTokenCookie(HttpServletRequest request) {
         String refreshToken = refreshTokenService.getRefreshTokenFromCookies(request);
         RefreshTokenResponse refreshTokenResponse = refreshTokenService
@@ -90,13 +90,13 @@ public class AuthenticationController {
                 .header(HttpHeaders.SET_COOKIE, NewJwtCookie.toString())
                 .build();
     }
-    @GetMapping("/info")
+    @GetMapping("/auth/info")
     public Authentication getAuthentication(@RequestBody AuthenticationRequest request){
         return     authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/auth/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request){
         String refreshToken = refreshTokenService.getRefreshTokenFromCookies(request);
         if(refreshToken != null) {
