@@ -20,6 +20,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -48,9 +49,6 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .headers((headers) -> headers.disable())
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(unauthorizedEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(request ->
                         request
                                 .requestMatchers(
