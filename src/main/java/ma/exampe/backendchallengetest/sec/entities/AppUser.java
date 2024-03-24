@@ -55,6 +55,10 @@ public class AppUser implements UserDetails { // make our app User a spring secu
         return email;
     }
 
+    public String getAppUsername() {
+        return username;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
