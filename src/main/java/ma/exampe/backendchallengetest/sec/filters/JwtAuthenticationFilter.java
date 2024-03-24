@@ -27,11 +27,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("attemptAuthentication method");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        System.out.println(username);
-        System.out.println(password);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, password);
@@ -41,17 +38,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("successfulAuthentication method");
         AppUser user = (AppUser) authResult.getPrincipal(); // cast to get email
         Algorithm algo1 = Algorithm.HMAC256("mySecret123");
         String role = user.getAuthorities().stream()
                 .findFirst()
                 .map(GrantedAuthority::getAuthority)
                 .orElse("");
-
-        System.out.println("successfulAuthentication method 2");
-        System.out.println(user.getUsername());
-        System.out.println(user.getEmail());
         String jwtAccessToken = JWT.create()
                 //.withSubject(user.getUsername())
                 .withSubject(user.getEmail())

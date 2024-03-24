@@ -59,13 +59,6 @@ public class AppUserRestController {
     public  ResponseEntity<Resource>  generateUsers(@RequestParam int count) {
         List<AppUser> users = appUserService.generateUsers(count);
 
-        // TODO: remove saving users when geting them
-        for (AppUser user: users) {
-            //appUserService.saveUser(user);
-            System.out.println(user);
-        }
-
-
         // Convert list of users to JSON
         String json = new Gson().toJson(users);
 
@@ -107,7 +100,6 @@ public class AppUserRestController {
             }
     )
     public ResponseEntity<ImportUsersSummary> uploadUsersBatch(@RequestPart("file") MultipartFile file) {
-        System.out.println(file);
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(new ImportUsersSummary(0, 0, 0));
         }

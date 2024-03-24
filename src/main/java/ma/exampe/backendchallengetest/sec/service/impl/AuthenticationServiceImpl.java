@@ -64,10 +64,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        System.out.println("authenticate impl :");
-        System.out.println(request.getUsername());
-        System.out.println(request.getPassword());
-        System.out.println(request);
         var usernameOrEmail = request.getUsername();
 
         // Attempt to authenticate using username
