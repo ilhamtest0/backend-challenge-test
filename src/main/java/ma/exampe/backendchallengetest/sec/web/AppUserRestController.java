@@ -1,6 +1,7 @@
 package ma.exampe.backendchallengetest.sec.web;
 
 import com.google.gson.Gson;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.RequiredArgsConstructor;
 import ma.exampe.backendchallengetest.sec.entities.AppUser;
 import ma.exampe.backendchallengetest.sec.entities.ImportUsersSummary;
@@ -26,13 +27,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "User", description = "The user entry point contains diffrents APIs on user")
+@SecurityRequirements() /*
+    This API won't have any security requirements. Therefore, we need to override the default security requirement configuration
+    with @SecurityRequirements()
+    */
 @RequiredArgsConstructor
 public class AppUserRestController {
-    private AppUserService appUserService;
+    private  final AppUserService appUserService;
 
-    public AppUserRestController(AppUserService appUserService) {
+    /*public AppUserRestController(AppUserService appUserService) {
         this.appUserService = appUserService;
-    }
+    }*/
 
     @GetMapping("/generate")
     @Operation(
@@ -79,7 +84,11 @@ public class AppUserRestController {
 
 
 
-    @PostMapping("/batch")
+    //@PostMapping("/batch")
+    @RequestMapping(
+            path = "/batch",
+            method = RequestMethod.POST,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             description = "This endpoint uploads given users in a json file to db",
             summary = "upload users",

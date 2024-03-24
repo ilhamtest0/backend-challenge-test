@@ -3,7 +3,9 @@ package ma.exampe.backendchallengetest.sec.web;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import ma.exampe.backendchallengetest.sec.entities.AppUser;
 import ma.exampe.backendchallengetest.sec.enums.Role;
 import ma.exampe.backendchallengetest.sec.repo.AppUserRepository;
@@ -17,14 +19,20 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1")
 @PreAuthorize("hasAnyRole('ADMIN','USER')")
-@Tag(name = "Authorization", description = "The Authorization API. Contains a secure hello method")
+/*
+@Tag(name = "Authorization", description = "The Authorization API. Contains secure get user methods")
+@SecurityRequirements() /*
+    This API won't have any security requirements. Therefore, we need to override the default security requirement configuration
+    with @SecurityRequirements()
+    */
+@RequiredArgsConstructor
 public class AuthorizationController {
 
     private final AppUserRepository userRepository;
 
-    public AuthorizationController(AppUserRepository userRepository) {
+    /*public AuthorizationController(AppUserRepository userRepository) {
         this.userRepository = userRepository;
-    }
+    }*/
 
 
     @GetMapping("/admin/resource")
