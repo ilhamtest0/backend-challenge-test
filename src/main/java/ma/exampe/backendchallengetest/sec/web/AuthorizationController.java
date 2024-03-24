@@ -3,7 +3,9 @@ package ma.exampe.backendchallengetest.sec.web;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import ma.exampe.backendchallengetest.sec.entities.AppUser;
 import ma.exampe.backendchallengetest.sec.enums.Role;
 import ma.exampe.backendchallengetest.sec.repo.AppUserRepository;
@@ -17,15 +19,22 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @PreAuthorize("hasAnyRole('ADMIN','USER')")
-@Tag(name = "Authorization", description = "The Authorization API. Contains a secure hello method")
+/*
+@Tag(name = "Authorization", description = "The Authorization API. Contains secure get user methods")
+@SecurityRequirements() /*
+    This API won't have any security requirements. Therefore, we need to override the default security requirement configuration
+    with @SecurityRequirements()
+    */
+@RequiredArgsConstructor
 public class AuthorizationController {
 
     private final AppUserRepository userRepository;
 
-    public AuthorizationController(AppUserRepository userRepository) {
+    /*public AuthorizationController(AppUserRepository userRepository) {
         this.userRepository = userRepository;
-    }
+    }*/
 
+    /*
 
     @GetMapping("/admin/resource")
     @PreAuthorize("hasAuthority('READ_PRIVILEGE') and hasRole('ADMIN')")
@@ -46,6 +55,8 @@ public class AuthorizationController {
     public ResponseEntity<String> sayHelloWithRoleAdminAndReadAuthority() {
         return ResponseEntity.ok("Hello, you have access to a protected resource that requires admin role and read authority.");
     }
+
+    */
 
     @GetMapping("/users/me")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
@@ -124,6 +135,7 @@ public class AuthorizationController {
     }
 
 
+    /*
     @DeleteMapping("/admin/resource")
     @PreAuthorize("hasAuthority('DELETE_PRIVILEGE') and hasRole('ADMIN')")
     public ResponseEntity<String> sayHelloWithRoleAdminAndDeleteAuthority() {
@@ -139,5 +151,7 @@ public class AuthorizationController {
     public ResponseEntity<String> sayHelloWithRoleUserAndUpdateAuthority() {
         return ResponseEntity.ok("Hello, you have access to a protected resource that requires user role and update authority.");
     }
+
+     */
 
 }
