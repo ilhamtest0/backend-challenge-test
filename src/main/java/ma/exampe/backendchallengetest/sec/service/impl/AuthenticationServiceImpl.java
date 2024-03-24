@@ -63,13 +63,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        System.out.println(request.getEmail());
+        System.out.println(request.getUsername());
         System.out.println(request.getPassword());
         System.out.println(request);
+        var usernameOrEmail = request.getUsername();
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
+                new UsernamePasswordAuthenticationToken(usernameOrEmail,request.getPassword()));
 
-        var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+        //var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+        var user = userRepository.findByEmailOrUsername(usernameOrEmail)
+                //.or(userRepository.findByUsername(usernameOrEmail))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
         var roles = user.getRole().getAuthorities()
                 .stream()
                 .map(SimpleGrantedAuthority::getAuthority)

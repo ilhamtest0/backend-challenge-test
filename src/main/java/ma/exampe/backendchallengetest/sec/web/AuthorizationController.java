@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 @PreAuthorize("hasAnyRole('ADMIN','USER')")
 @Tag(name = "Authorization", description = "The Authorization API. Contains a secure hello method")
 public class AuthorizationController {
@@ -102,18 +102,21 @@ public class AuthorizationController {
         try {
             String token = Utils.extractToken(authorizationHeader);
             Claims claims = Utils.decodeToken(token);
+            System.out.println("Claims :");
+            System.out.println(claims);
             String requesterUserEmail = claims.get("sub", String.class);
             if (requesterUserEmail != null) {
                 AppUser requesterUserProfile = userRepository.findByEmail(requesterUserEmail).orElseThrow(() -> new RuntimeException("Requester User not found"));
-                String requesterUserProfileRole = requesterUserProfile.getRole().toString();
-                if(requesterUserProfileRole == "ADMIN" ||  requesterUserProfile.getUsername() == username) {
-                    AppUser requestedUserProfile = userRepository.findByUsername(requesterUserEmail).orElseThrow(() -> new RuntimeException("Requested User not found"));
+                String requesterUserRole = requesterUserProfile.getRole().toString();
+                String requesterUserName = requesterUserProfile.getAppUsername();
+                if(requesterUserRole.equals("ADMIN") || requesterUserName.equals(username)) { // ADMIN OR OWN
+                    AppUser requestedUserProfile = userRepository.findByEmail(requesterUserEmail).orElseThrow(() -> new RuntimeException("Requested User not found"));
                     return ResponseEntity.ok().body(requestedUserProfile);
                 } else  {
                     throw new RuntimeException("User does not have right privileges");
                 }
             } else {
-                throw new RuntimeException("Requester not found");
+                throw new RuntimeException("Unable to get Requester data");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage().toString());

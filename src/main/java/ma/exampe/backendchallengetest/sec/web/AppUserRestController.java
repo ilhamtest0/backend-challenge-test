@@ -31,7 +31,8 @@ public class AppUserRestController {
 
         // TODO: remove saving users when geting them
         for (AppUser user: users) {
-            appUserService.saveUser(user);
+            //appUserService.saveUser(user);
+            System.out.println(user);
         }
 
 
