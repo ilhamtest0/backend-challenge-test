@@ -30,34 +30,6 @@ public class AuthorizationController {
 
     private final AppUserRepository userRepository;
 
-    /*public AuthorizationController(AppUserRepository userRepository) {
-        this.userRepository = userRepository;
-    }*/
-
-    /*
-
-    @GetMapping("/admin/resource")
-    @PreAuthorize("hasAuthority('READ_PRIVILEGE') and hasRole('ADMIN')")
-    @Operation(
-            description = "This endpoint require a valid JWT, ADMIN role with READ_PRIVILEGE",
-            summary = "Hello secured endpoint",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200"
-                    ),
-                    @ApiResponse(
-                            description = "Unauthorized / Invalid Token",
-                            responseCode = "401"
-                    )
-            }
-    )
-    public ResponseEntity<String> sayHelloWithRoleAdminAndReadAuthority() {
-        return ResponseEntity.ok("Hello, you have access to a protected resource that requires admin role and read authority.");
-    }
-
-    */
-
     @GetMapping("/users/me")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @Operation(
@@ -132,25 +104,5 @@ public class AuthorizationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage().toString());
         }
     }
-
-
-    /*
-    @DeleteMapping("/admin/resource")
-    @PreAuthorize("hasAuthority('DELETE_PRIVILEGE') and hasRole('ADMIN')")
-    public ResponseEntity<String> sayHelloWithRoleAdminAndDeleteAuthority() {
-        return ResponseEntity.ok("Hello, you have access to a protected resource that requires admin role and delete authority.");
-    }
-    @PostMapping("/user/resource")
-    @PreAuthorize("hasAuthority('WRITE_PRIVILEGE') and hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<String> sayHelloWithRoleUserAndCreateAuthority() {
-        return ResponseEntity.ok("Hello, you have access to a protected resource that requires user role and write authority.");
-    }
-    @PutMapping("/user/resource")
-    @PreAuthorize("hasAuthority('UPDATE_PRIVILEGE') and hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<String> sayHelloWithRoleUserAndUpdateAuthority() {
-        return ResponseEntity.ok("Hello, you have access to a protected resource that requires user role and update authority.");
-    }
-
-     */
 
 }

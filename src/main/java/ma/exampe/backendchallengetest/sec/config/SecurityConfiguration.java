@@ -58,8 +58,6 @@ public class SecurityConfiguration {
                                         "/api/users/batch",
                                         "/api/users/batch/**",
                                         "/api/auth/**",
-                                        //"/api/v1/auth/**",
-                                        //"/api/v1/auth/authenticate",
                                         "/v2/api-docs",
                                         "/v3/api-docs",
                                         "/v3/api-docs/**",
