@@ -13,6 +13,7 @@ import ma.exampe.backendchallengetest.sec.service.JwtService;
 import ma.exampe.backendchallengetest.sec.service.RefreshTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,12 +64,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        System.out.println(request.getUsername());
-        System.out.println(request.getPassword());
-        System.out.println(request);
         var usernameOrEmail = request.getUsername();
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(usernameOrEmail,request.getPassword()));
+
+        // Attempt to authenticate using username
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(usernameOrEmail, request.getPassword()));
+        } catch (AuthenticationException e) {
+            // If authentication using username fails, attempt authentication using email
+            var user = userRepository.findByEmailOrUsername(usernameOrEmail)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPassword()));
+        }
+
+
+        //authenticationManager.authenticate(
+          //      new UsernamePasswordAuthenticationToken(usernameOrEmail,request.getPassword()));
 
         //var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
         var user = userRepository.findByEmailOrUsername(usernameOrEmail)
@@ -78,7 +90,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .stream()
                 .map(SimpleGrantedAuthority::getAuthority)
                 .toList();
-        var jwt = jwtService.generateToken((UserDetails) user);
+        var jwt = jwtService.generateToken((AppUser) user); // cast to get email and username
         var refreshToken = refreshTokenService.createRefreshToken(user.getId());
         return AuthenticationResponse.builder()
                 .accessToken(jwt)

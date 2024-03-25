@@ -1,5 +1,6 @@
 package ma.exampe.backendchallengetest.sec.service.impl;
 
+import ma.exampe.backendchallengetest.sec.entities.AppUser;
 import ma.exampe.backendchallengetest.sec.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -45,8 +46,9 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
+        AppUser appUser = (AppUser) userDetails;
         final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (userName.equals(appUser.getEmail())) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -97,7 +99,7 @@ public class JwtServiceImpl implements JwtService {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(((AppUser) userDetails).getEmail()) // cast to create subject with email
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

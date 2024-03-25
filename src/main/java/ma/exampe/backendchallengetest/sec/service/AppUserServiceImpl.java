@@ -53,7 +53,6 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public ImportUsersSummary createUsersFromJson(String jsonContent) {
-        System.out.println(jsonContent);
         ImportUsersSummary importSummary = new ImportUsersSummary();
         Gson gson = new Gson();
 
@@ -66,7 +65,6 @@ public class AppUserServiceImpl implements AppUserService {
             int failedRecords = 0;
 
             for (AppUser user : users) {
-                System.out.println(user);
                 if (!appUserRepository.existsByEmail(user.getEmail()) && !appUserRepository.existsByUsername(user.getUsername())) {
                     saveUser(user);
                     importedRecords++;
@@ -97,11 +95,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public void saveUser(AppUser user) {
-        // Encoder le mot de passe avant de sauvegarder l'utilisateur
-        // TODO: remove logs
-        System.out.println(user.getEmail());
-        System.out.println(user.getUsername());
-        System.out.println(user.getPassword());
+        // Encoder password before saving
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
         appUserRepository.save(user);
