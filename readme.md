@@ -10,7 +10,7 @@ This repository showcases a project that demonstrates the implementation of JSON
 
 # Technologies
 
-- Spring Boot 3.1
+- Spring Boot
 - Spring Security
 - Spring Data JPA
 - Spring Boot custom Validation
